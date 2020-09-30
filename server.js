@@ -79,7 +79,7 @@ io.on("connection", function (socket) {
     console.log(room)
     if (numClients === 0) {
       socket.join(room);
-    } else {
+    } else if (numClients === 1) {
       socket.join(room);
       // When the client is second to join the room, both clients are ready.
       logIt("Broadcasting ready message", room);
@@ -88,10 +88,10 @@ io.on("connection", function (socket) {
       socket.emit("ready", room).to(room);
       socket.broadcast.to(room).emit("ready", room);
     } 
-    // else {
-    //   logIt("room already full", room);
-    //   socket.emit("full", room);
-    // }
+    else {
+      logIt("room already full", room);
+      socket.emit("full", room);
+    }
   });
 
   // When receiving the token message, use the Twilio REST API to request an
@@ -100,6 +100,7 @@ io.on("connection", function (socket) {
     logIt("Received token request", room);
     twilio.tokens.create(function (err, response) {
       if (err) {
+        console.log("yttyt")
         logIt(err, room);
       } else {
         logIt("Token generated. Returning it to the browser client", room);
