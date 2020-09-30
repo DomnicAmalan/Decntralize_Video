@@ -76,18 +76,19 @@ io.on("connection", function (socket) {
     logIt("A client joined the room", room);
     var clients = io.sockets.adapter.rooms[room];
     var numClients = typeof clients !== "undefined" ? clients.length : 0;
-    socket.join(room);
-    // if (numClients === 0) {
-    //   socket.join(room);
-    // } else if (numClients === 1) {
-    //   socket.join(room);
-    //   // When the client is second to join the room, both clients are ready.
-    //   logIt("Broadcasting ready message", room);
-    //   // First to join call initiates call
-    //   socket.broadcast.to(room).emit("willInitiateCall", room);
-    //   socket.emit("ready", room).to(room);
-    //   socket.broadcast.to(room).emit("ready", room);
-    // } else {
+    console.log(room)
+    if (numClients === 0) {
+      socket.join(room);
+    } else {
+      socket.join(room);
+      // When the client is second to join the room, both clients are ready.
+      logIt("Broadcasting ready message", room);
+      // First to join call initiates call
+      socket.broadcast.to(room).emit("willInitiateCall", room);
+      socket.emit("ready", room).to(room);
+      socket.broadcast.to(room).emit("ready", room);
+    } 
+    // else {
     //   logIt("room already full", room);
     //   socket.emit("full", room);
     // }
